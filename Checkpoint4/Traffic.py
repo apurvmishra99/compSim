@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class Traffic(object):
     def __init__(self, roadDensity=0.5, nIter=10):
-        self.roadL = 5
+        self.roadL = 10
         self.roadDensity = roadDensity
         self.posCar = np.array([0]*int((1-self.roadDensity) *
                                self.roadL) + [1]*int(self.roadL*self.roadDensity))
@@ -21,7 +21,6 @@ class Traffic(object):
             movCars = 0
             root = list(self.posCarEveryIter[i-1])
             while n < self.posCar.size -1:
-                mov_flag = False
                 front = (n+1) % self.posCar.size
                 back = (n-1) % self.posCar.size
                 if self.posCarEveryIter[i-1][n] == 1:
@@ -31,28 +30,25 @@ class Traffic(object):
                         root[n] = 0
                         root[front] = 1
                         movCars += 1
-                        mov_flag = True
 
                 elif self.posCarEveryIter[i-1][n] == 0:
                     if self.posCarEveryIter[i-1][back] == 1:
                         root[n] = 1
                         root[back] = 0
                         movCars += 1
-                        mov_flag = True
                     else:
                         root[n] = 0
-                if mov_flag:
-                    self.avgSpeeds.append(movCars/(self.roadDensity * self.roadL))
                 n += 1
-            self.posCarEveryIter[i] = np.array(list(root))
+
+            self.avgSpeeds.append(movCars/int(self.roadDensity * self.roadL))
+            self.posCarEveryIter[i] = np.array(root)
 
     def plotMovement(self):
         plt.imshow(self.posCarEveryIter, interpolation=None, origin='lower')
         plt.show()
     
     def plotSpeeds(self):
+        #x = np.linspace(0, self.nIter, num=len(self.avgSpeeds))
         plt.plot(self.avgSpeeds)
-        plt.show()       
-
-
+        plt.show()
 

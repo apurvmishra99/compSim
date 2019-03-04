@@ -8,6 +8,7 @@ def main():
     test.update()
     test.plotMovement()
     test.plotSpeeds()
+    print(test.avgSpeeds)
     print(mode(test.avgSpeeds))
 if __name__ == "__main__":
     main()
