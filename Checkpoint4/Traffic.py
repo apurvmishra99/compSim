@@ -19,29 +19,29 @@ class Traffic(object):
         for i in range(1, self.nIter):
             n = 0
             movCars = 0
-            root = list(self.posCarEveryIter[i-1])
+            root = np.copy(self.posCarEveryIter[i-1])
             while n < self.posCar.size -1:
                 front = (n+1) % self.posCar.size
                 back = (n-1) % self.posCar.size
-                if self.posCarEveryIter[i-1][n] == 1:
-                    if self.posCarEveryIter[i-1][front] == 1:
-                        root[n] = 1          
-                    else:
-                        root[n] = 0
-                        root[front] = 1
-                        movCars += 1
+                if self.posCarEveryIter[i-1][n] == 1 and self.posCarEveryIter[i-1][front] == 0:
+                    # if self.posCarEveryIter[i-1][front] == 1:
+                    #     root[n] = 1          
+                    # else:
+                    root[n] = 0
+                    root[front] = 1
+                    movCars += 1
 
-                elif self.posCarEveryIter[i-1][n] == 0:
-                    if self.posCarEveryIter[i-1][back] == 1:
-                        root[n] = 1
-                        root[back] = 0
-                        movCars += 1
-                    else:
-                        root[n] = 0
+                elif self.posCarEveryIter[i-1][n] == 0 and self.posCarEveryIter[i-1][back] == 1:
+                    # if self.posCarEveryIter[i-1][back] == 1:
+                    root[n] = 1
+                    root[back] = 0
+                    movCars += 1
+                    # else:
+                        # root[n] = 0
                 n += 1
 
             self.avgSpeeds.append(movCars/int(self.roadDensity * self.roadL))
-            self.posCarEveryIter[i] = np.array(root)
+            self.posCarEveryIter[i] = root
 
     def plotMovement(self):
         plt.imshow(self.posCarEveryIter, interpolation=None, origin='lower')
