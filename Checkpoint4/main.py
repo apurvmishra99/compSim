@@ -1,10 +1,13 @@
-import Traffic
+from Traffic import Traffic
+from scipy.stats import mode
 
 def main():
-    test = Traffic.Traffic(0.3,5)
+    x, y = [float(val) for val in input(
+        "Enter the density of cars on the road and the number of iterations you want: ").split(" ")]
+    test = Traffic(x,int(y))
     test.update()
     test.plotMovement()
-    for x in test.avgSpeeds:
-        print(x)
+    test.plotSpeeds()
+    print(mode(test.avgSpeeds))
 if __name__ == "__main__":
     main()
