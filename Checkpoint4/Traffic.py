@@ -15,6 +15,8 @@ class Traffic(object):
     def update(self):
         np.random.seed(3)
         np.random.shuffle(self.posCar)
+        np.random.seed(5)
+        np.random.shuffle(self.posCar)
         self.posCarEveryIter[0] = self.posCar
         for i in range(1, self.nIter):
             n = 0
@@ -24,20 +26,14 @@ class Traffic(object):
                 front = (n+1) % self.posCar.size
                 back = (n-1) % self.posCar.size
                 if self.posCarEveryIter[i-1][n] == 1 and self.posCarEveryIter[i-1][front] == 0:
-                    # if self.posCarEveryIter[i-1][front] == 1:
-                    #     root[n] = 1          
-                    # else:
                     root[n] = 0
                     root[front] = 1
                     movCars += 1
 
                 elif self.posCarEveryIter[i-1][n] == 0 and self.posCarEveryIter[i-1][back] == 1:
-                    # if self.posCarEveryIter[i-1][back] == 1:
                     root[n] = 1
                     root[back] = 0
                     movCars += 1
-                    # else:
-                        # root[n] = 0
                 n += 1
 
             self.avgSpeeds.append(movCars/int(self.roadDensity * self.roadL))
@@ -48,7 +44,6 @@ class Traffic(object):
         plt.show()
     
     def plotSpeeds(self):
-        #x = np.linspace(0, self.nIter, num=len(self.avgSpeeds))
         plt.plot(self.avgSpeeds)
         plt.show()
 
