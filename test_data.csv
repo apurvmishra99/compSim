@@ -1,0 +1,7 @@
+Name,Mass,X Position,Y Position,X Velocity,Y Velocity
+Sun,2e30,0.00E+00,0.00E+00,0.00E+00,0.00E+00
+Mercury,0.36e24,58e9,0.00E+00,0.00E+00,47.5e3
+Venus,4.92e24,108e9,0.00E+00,0.00E+00,35.0e3
+Earth,6e24,152.1e9,0.00E+00,0.00E+00,29.8e3
+Mars,0.66e23,228e9,0.00E+00,0.00E+00,24.1e3
+satalite,600e3,153.5e9,0.00E+00,0.00E+00,33.25E3

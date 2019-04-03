@@ -1,6 +1,8 @@
 from celestial_body import GRAVITATIONAL_CONSTANT
 from celestial_body import CelestialBody
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import matplotlib.patches as patches
 import numpy as np
 
 class EulerIntegrator:
@@ -28,15 +30,15 @@ class EulerIntegrator:
     def compute_velocity(self):
         for body_index, target_body in enumerate(self.bodies):
             acceleration = self.calculate_single_body_acceleration(body_index)
-            x_velocity = target_body.velocity[0] + acceleration.x * self.time_step
-            y_velocity = target_body.velocity[1] + acceleration.y * self.time_step
+            x_velocity = target_body.velocity[0] + acceleration[0] * self.time_step
+            y_velocity = target_body.velocity[1] + acceleration[1] * self.time_step
             target_body.velocity((x_velocity, y_velocity))
 
     def compute_gravity_step(self):
         self.compute_velocity()
         self.update_location()
 
-    def plot_output(self, bodies, outfile=None):
+    def plot_output(self, bodies):
         fig = plt.figure()
         colours = ['r', 'b', 'g', 'y', 'm', 'c']
         ax = fig.add_subplot(1, 1, projection='2d')
@@ -53,9 +55,6 @@ class EulerIntegrator:
         ax.set_ylim([-max_range, max_range])
         ax.legend()
 
-    if outfile:
-        plt.savefig(outfile)
-    else:
         plt.show()
 
 
@@ -77,3 +76,38 @@ class EulerIntegrator:
                     body_location["z"].append(bodies[index].location.z)
 
         return body_locations_hist
+
+    def init(self):
+        return self.patches
+
+    def run(self):
+
+        fig = plt.figure()
+        self.ax = plt.axes()
+        for i in range(0, self.sys.scalars[0].size):
+            self.patches.append(patches.Circle(
+                (self.sys.vectors[0][i]), 1.5e5, animated=False, color=self.colours[i]))
+        for i in range(0, len(self.patches)):
+            self.ax.add_patch(self.patches[i])
+        self.ax.axis('scaled')
+        self.ax.set_xlim(-25e06, 25e06)
+        self.ax.set_ylim(-25e06, 25e06)
+        self.ax.patch.set_facecolor((0., 0., 0.))
+        self.t = 0
+        anim = FuncAnimation(fig, self.animate, init_func=self.init,
+                             frames=self.iter, repeat=False, interval=20, blit=False)
+        plt.show()
+
+    def animate(self, i):  # animatio on the go
+        self.sys.computeAcceleration()
+        self.sys.computeVelocity()
+        self.sys.computePosition()
+        self.time += 8.
+        if i % 250 == 0:
+            self.sys.computeKE()
+            print(self.sys.ke)
+        if (abs(np.arctan2(self.sys.vectors[0][1][1], self.sys.vectors[0][1][0])) <= 0.001 and i > 500):
+            self.t = self.time
+        for x in range(0, len(self.patches)):
+            self.patches[x].center = self.sys.vectors[0][x]
+        return self.patches
